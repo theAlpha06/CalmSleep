@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 // Chakra imports
 import {
   Flex,
@@ -5,21 +6,24 @@ import {
   Text,
   Image,
   SimpleGrid,
+  Progress,
   useColorModeValue,
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import IconBox from "components/icons/IconBox";
 import React from "react";
 import { FaPlayCircle, FaPauseCircle } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   TbPlayerTrackNextFilled,
   TbPlayerTrackPrevFilled,
 } from "react-icons/tb";
 
-let audio;
 export default function Song(props: { [x: string]: any }) {
+  // let audio = new Audio('/havana.mp3');
+  const [audio] = useState(typeof Audio !== "undefined" && new Audio('/havana.mp3'));
   const { ...rest } = props;
+  const reference = useRef();
   // Chakra Color Mode
   const cardColor = useColorModeValue("white", "navy.700");
   const brandColor = useColorModeValue("brand.500", "white");
@@ -28,14 +32,23 @@ export default function Song(props: { [x: string]: any }) {
     "0px 18px 40px rgba(112, 144, 176, 0.12)",
     "unset"
   );
+  function handleProgress() {
+    const percent = (audio.currentTime / audio.duration) * 100;
+  }
+  
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const [togglePlay, setTogglePlay] = useState(false);
 
+  const changeRange = () => {
+    const range = reference.current;
+  }
 
   return (
     <Card w="100%" {...rest}>
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap="20px" mb="20px">
+     
         <Card>
+        
           <Image
             src="https://th.bing.com/th/id/R.adef27eb046caec16bf739128453d780?rik=91OeRVwG31pUMQ&pid=ImgRaw&r=0"
             borderRadius={30}
@@ -75,7 +88,7 @@ export default function Song(props: { [x: string]: any }) {
           </Card>
           <Card
             bg={cardColor}
-            flexDirection="row"
+            flexDirection="column"
             alignItems={"center"}
             justifyContent={"center"}
             boxShadow={cardShadow}
@@ -84,8 +97,11 @@ export default function Song(props: { [x: string]: any }) {
             px="20px"
             mt="15px"
             mx="auto"
+            paddingTop={'4rem'}
           >
-            <Flex direction="row" py="5px" padding={"3rem"} gap={"1rem"}>
+            
+            <input type='range' ref={reference} value='0' onChange={() => {changeRange()}}/>
+            <Flex direction="row" py="5px" padding={"2rem 3rem 3rem 3rem"} gap={"1rem"}>
               <IconBox
                 w="50px"
                 h="50px"
@@ -104,8 +120,8 @@ export default function Song(props: { [x: string]: any }) {
                   <IconBox
                   cursor='pointer'
                   onClick={() => {
-                    audio = new Audio('/havana.mp3');
                     audio.play();
+                    handleProgress();
                     setTogglePlay(prevState => !prevState);
                   }}
                   w="50px"
@@ -161,3 +177,6 @@ export default function Song(props: { [x: string]: any }) {
     </Card>
   );
 }
+
+
+
